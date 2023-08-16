@@ -21,7 +21,13 @@ import { Image } from "expo-image";
 
 import Choose from "./screens/chooseType";
 
-import Animated, { Extrapolate } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  useAnimatedScrollHandler,
+  interpolate,
+  Extrapolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 
 import InformationInput from "./screens/nativeBasic";
 
@@ -41,80 +47,168 @@ const Signup = () => {
   const setAccountCreated = useAccountStore((state) => state.setAccountCreated);
   const theme = useTheme();
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
-  const scrollX = new Animated.Value(0);
-
-  const backgroundImageTranslateDrake = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
-    outputRange: [SCREEN_WIDTH * 0.75, -SCREEN_WIDTH * 0.2, -SCREEN_WIDTH],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateASAP = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH],
-    outputRange: [-SCREEN_WIDTH * 0.1, -SCREEN_WIDTH],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateAriana = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH],
-    outputRange: [-SCREEN_WIDTH * 0.2, -SCREEN_WIDTH],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateWeeknd = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
-    outputRange: [SCREEN_WIDTH * 0.7, -SCREEN_WIDTH * 0.2, -SCREEN_WIDTH],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateTSwift = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
-    outputRange: [SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7, -SCREEN_WIDTH * 0.2],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateCole = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
-    outputRange: [SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7, -SCREEN_WIDTH * 0.2],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateJB = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
-    outputRange: [SCREEN_WIDTH * 3, SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7],
-    extrapolate: Extrapolate.CLAMP,
-  });
-  const backgroundImageTranslateBB = scrollX.interpolate({
-    inputRange: [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
-    outputRange: [SCREEN_WIDTH * 3, SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7],
-    extrapolate: Extrapolate.CLAMP,
-  });
-
-  const opacityAnimation = (index) =>
-    scrollX.interpolate({
-      inputRange: [
-        (index - 1) * SCREEN_WIDTH,
-        index * SCREEN_WIDTH,
-        (index + 1) * SCREEN_WIDTH,
-      ],
-      outputRange: [0, 1, 0],
-      extrapolate: Animated.Extrapolate.CLAMP,
-    });
-
-  const translateYAnimation = (index) =>
-    scrollX.interpolate({
-      inputRange: [
-        (index - 1) * SCREEN_WIDTH,
-        index * SCREEN_WIDTH,
-        (index + 1) * SCREEN_WIDTH,
-      ],
-      outputRange: [50, 0, 50],
-      extrapolate: Animated.Extrapolate.CLAMP,
-    });
 
   const [selectedOption, setSelectedOption] = useState("");
 
   const flatListRef = useRef(null); // Reference to the FlatList
+  const x = useSharedValue(0);
+  const drakeStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
+            [SCREEN_WIDTH * 0.75, -SCREEN_WIDTH * 0.2, -SCREEN_WIDTH],
+            Extrapolate.CLAMP
+          ),
+        },
+      ],
+    };
+  });
+
+  const asapStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH],
+            [-SCREEN_WIDTH * 0.1, -SCREEN_WIDTH],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.1 },
+      ],
+    };
+  });
+
+  const arianaStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH],
+            [-SCREEN_WIDTH * 0.2, -SCREEN_WIDTH],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.5 },
+      ],
+    };
+  });
+
+  const weekndStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
+            [SCREEN_WIDTH * 0.7, -SCREEN_WIDTH * 0.2, -SCREEN_WIDTH],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.5 },
+      ],
+    };
+  });
+
+  const tswiftStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
+            [SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7, -SCREEN_WIDTH * 0.2],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.1 },
+      ],
+    };
+  });
+
+  const coleStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
+            [SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7, -SCREEN_WIDTH * 0.2],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.5 },
+      ],
+    };
+  });
+
+  const jbStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
+            [SCREEN_WIDTH * 3, SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.1 },
+      ],
+    };
+  });
+
+  const bbStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            x.value,
+            [0, SCREEN_WIDTH, SCREEN_WIDTH * 2],
+            [SCREEN_WIDTH * 3, SCREEN_WIDTH * 1.5, SCREEN_WIDTH * 0.7],
+            Extrapolate.CLAMP
+          ),
+        },
+        { translateY: SCREEN_HEIGHT * 0.5 },
+      ],
+    };
+  });
+
+  const opacityAnimation = (index) =>
+    interpolate(
+      x.value,
+      [
+        (index - 1) * SCREEN_WIDTH,
+        index * SCREEN_WIDTH,
+        (index + 1) * SCREEN_WIDTH,
+      ],
+      [0, 1, 0],
+      Extrapolate.CLAMP
+    );
+
+  const translateYAnimation = (index) =>
+    interpolate(
+      x.value,
+      [
+        (index - 1) * SCREEN_WIDTH,
+        index * SCREEN_WIDTH,
+        (index + 1) * SCREEN_WIDTH,
+      ],
+      [150, 0, 150],
+      Extrapolate.CLAMP
+    );
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
 
     // Transition to the next screen.
     if (flatListRef.current) {
+      console.log(x.value);
       flatListRef.current.scrollToIndex({ index: 1, animated: true });
     }
   };
@@ -131,11 +225,17 @@ const Signup = () => {
     >
       {index === 0 ? (
         <Choose handleOptionSelect={handleOptionSelect} />
-      ) : index === 0 && selectedOption === "native" ? (
+      ) : index === 1 && selectedOption === "native" ? (
         <InformationInput />
       ) : null}
     </Animated.View>
   );
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      x.value = event.contentOffset.x;
+      console.log(x.value);
+    },
+  });
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -158,123 +258,105 @@ const Signup = () => {
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/drakeart.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.5,
-          height: SCREEN_HEIGHT * 0.5,
-          transform: [{ translateX: backgroundImageTranslateDrake }],
-        }}
+        style={[
+          drakeStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.5,
+            height: SCREEN_HEIGHT * 0.5,
+          },
+        ]}
       />
+
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/ariana1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.5,
-          height: SCREEN_HEIGHT * 0.5,
-          transform: [
-            {
-              translateX: backgroundImageTranslateAriana,
-              translateY: SCREEN_HEIGHT * 0.5,
-            },
-          ],
-        }}
+        style={[
+          arianaStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.5,
+            height: SCREEN_HEIGHT * 0.5,
+          },
+        ]}
       />
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/asap1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.35,
-          height: SCREEN_HEIGHT * 0.35,
-          transform: [
-            {
-              translateX: backgroundImageTranslateASAP,
-              translateY: SCREEN_HEIGHT * 0.1,
-            },
-          ],
-        }}
+        style={[
+          asapStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.35,
+            height: SCREEN_HEIGHT * 0.35,
+          },
+        ]}
       />
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/weeknd1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.6,
-          height: SCREEN_HEIGHT * 0.6,
-          transform: [
-            {
-              translateX: backgroundImageTranslateWeeknd,
-              translateY: SCREEN_HEIGHT * 0.5,
-            },
-          ],
-        }}
+        style={[
+          weekndStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.6,
+            height: SCREEN_HEIGHT * 0.6,
+          },
+        ]}
       />
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/tswift1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.6,
-          height: SCREEN_HEIGHT * 0.6,
-          transform: [
-            {
-              translateX: backgroundImageTranslateTSwift,
-              translateY: SCREEN_HEIGHT * 0.1,
-            },
-          ],
-        }}
+        style={[
+          tswiftStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.6,
+            height: SCREEN_HEIGHT * 0.6,
+          },
+        ]}
       />
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/cole1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.6,
-          height: SCREEN_HEIGHT * 0.6,
-          transform: [
-            {
-              translateX: backgroundImageTranslateCole,
-              translateY: SCREEN_HEIGHT * 0.5,
-            },
-          ],
-        }}
+        style={[
+          coleStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.6,
+            height: SCREEN_HEIGHT * 0.6,
+          },
+        ]}
       />
 
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/jb1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.6,
-          height: SCREEN_HEIGHT * 0.6,
-          transform: [
-            {
-              translateX: backgroundImageTranslateJB,
-              translateY: SCREEN_HEIGHT * 0.1,
-            },
-          ],
-        }}
+        style={[
+          jbStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.6,
+            height: SCREEN_HEIGHT * 0.6,
+          },
+        ]}
       />
 
       <Animated.Image
         source={require("@assets/images/onboardingImages/art/bbunny1.png")}
         resizeMode="contain"
-        style={{
-          position: "absolute",
-          width: SCREEN_WIDTH * 0.6,
-          height: SCREEN_HEIGHT * 0.6,
-          transform: [
-            {
-              translateX: backgroundImageTranslateBB,
-              translateY: SCREEN_HEIGHT * 0.5,
-            },
-          ],
-        }}
+        style={[
+          bbStyle,
+          {
+            position: "absolute",
+            width: SCREEN_WIDTH * 0.6,
+            height: SCREEN_HEIGHT * 0.6,
+          },
+        ]}
       />
 
       <Animated.FlatList
-        ref={flatListRef}
+        ref={flatListRef as any}
         horizontal
         pagingEnabled
         scrollEventThrottle={16}
@@ -282,15 +364,7 @@ const Signup = () => {
         data={Array(3).fill(null)} // For 3 pages/screens
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
-        onScroll={Animated.event([
-          {
-            nativeEvent: {
-              contentOffset: {
-                x: scrollX,
-              },
-            },
-          },
-        ])}
+        onScroll={onScroll}
       />
     </View>
   );
