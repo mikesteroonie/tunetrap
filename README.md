@@ -1,4 +1,4 @@
-# TuneTrap Stack 🚀
+# TuneTrap 🚀
 
 This social media app I'm creating built on the angle to allow people to create a profile around their music tastes built with React Native. The stack is: Typescript, Expo Router, Tailwind(Nativewind), Zustand, and Supabase(PostGreSQL) for the backend.
 
