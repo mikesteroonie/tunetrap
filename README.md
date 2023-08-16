@@ -21,3 +21,6 @@ TuneTrap allows users to create timelines of their music tastes in answer to pro
 Furthermore posts are only quoted song lyrics, allowing the song to communicate their sentiment for them. The goal here is to be the next interactive social media, and find pockets of opportunity such as being the go to link to put in one's Instagram bio.
 
 All designs were created in Figma by me, and all artists artwork are being utilized in alignment with Spotifies legal documenation ☺️
+
+![homescreen](https://github.com/mikesteroonie/tunetrap/assets/86593468/1b2d94fe-f3a8-4f56-9218-4d8da7bbe612)
+
