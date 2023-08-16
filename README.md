@@ -22,5 +22,4 @@ Furthermore posts are only quoted song lyrics, allowing the song to communicate 
 
 All designs were created in Figma by me, and all artists artwork are being utilized in alignment with Spotifies legal documenation ☺️
 
-![homescreen](https://github.com/mikesteroonie/tunetrap/assets/86593468/1b2d94fe-f3a8-4f56-9218-4d8da7bbe612)
-
+![homescreensmall](https://github.com/mikesteroonie/tunetrap/assets/86593468/ebba370e-4a84-4f7c-8ec7-1a56c225a850)
