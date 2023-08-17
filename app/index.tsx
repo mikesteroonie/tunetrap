@@ -48,7 +48,7 @@ const App = () => {
 
   if (!isPastWelcome) {
     return (
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <LoginFirst onPastWelcome={handlePastWelcome} />
       </PaperProvider>
     );
