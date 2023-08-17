@@ -73,11 +73,19 @@ const nativeProfileSetup = () => {
         style={{
           alignItems: "flex-start",
           justifyContent: "center",
-          paddingBottom: "20",
+          paddingBottom: 20,
         }}
       >
         {image && (
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: 200,
+              height: 200,
+              borderRadius: 20,
+              marginBottom: 20,
+            }}
+          />
         )}
         <TouchableOpacity
           onPress={pickImage}

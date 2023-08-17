@@ -82,8 +82,8 @@ const RenderItem = ({
     //   height = SCREEN_WIDTH * 1.2;
     // }
     if (index === 0) {
-      width = SCREEN_WIDTH * 1.7;
-      height = SCREEN_WIDTH * 1.7;
+      width = SCREEN_WIDTH * 1.9;
+      height = SCREEN_WIDTH * 1.9;
     } else if (index === 1) {
       width = SCREEN_WIDTH * 2.3;
       height = SCREEN_WIDTH * 2.3;
