@@ -8,11 +8,14 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import { TextInput } from "react-native-paper";
 
 import { useState } from "react";
+
+import { supabase } from "@lib/supabase";
 
 const InfoInput = ({ title, sub }) => {
   const [fullName, setFullName] = useState("");
@@ -20,7 +23,31 @@ const InfoInput = ({ title, sub }) => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+
+  async function signInWithEmail() {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) Alert.alert(error.message);
+    setLoading(false);
+  }
+
+  async function signUpWithEmail() {
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
+
+    if (error) Alert.alert(error.message);
+    setLoading(false);
+  }
 
   // Conditionally return input label and state updater function
   const getInputProperties = () => {
@@ -33,7 +60,7 @@ const InfoInput = ({ title, sub }) => {
         };
       case "Email":
         return {
-          label: "Email",
+          label: "email@address.com",
           value: email,
           setState: setEmail,
         };
@@ -45,7 +72,7 @@ const InfoInput = ({ title, sub }) => {
         };
       case "Username":
         return {
-          label: "Username",
+          label: "@handle",
           value: username,
           setState: setUsername,
         };
@@ -69,6 +96,7 @@ const InfoInput = ({ title, sub }) => {
         value={value}
         textColor="white"
         mode="flat"
+        secureTextEntry={label == "Password" ? true : false}
         selectionColor="transparent"
         underlineColor="transparent"
         onChangeText={(text) => setState(text)}
