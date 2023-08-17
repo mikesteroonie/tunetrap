@@ -30,6 +30,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import InformationInput from "./screens/nativeBasic";
+import Setup from "./screens/nativeProfileSetup";
 
 type ImageAsset = {
   id: number;
@@ -43,6 +44,7 @@ const signupImage: ImageAsset = {
 };
 
 const Signup = () => {
+  // CONSTS AND VARIABLES
   const accountCreated = useAccountStore((state) => state.accountCreated);
   const setAccountCreated = useAccountStore((state) => state.setAccountCreated);
   const theme = useTheme();
@@ -52,6 +54,34 @@ const Signup = () => {
 
   const flatListRef = useRef(null); // Reference to the FlatList
   const x = useSharedValue(0);
+
+  const [scrollEnabled, setScrollEnabled] = useState(false);
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
+    setScrollEnabled(true);
+
+    // Transition to the next screen.
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index: 1, animated: true });
+    }
+  };
+
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      x.value = event.contentOffset.x;
+    },
+  });
+
+  const getDynamicScreens = () => {
+    return [
+      <Choose handleOptionSelect={handleOptionSelect} />,
+
+      <InformationInput />,
+      <Setup />,
+    ];
+  };
+
+  //IMAGE ANIMATIONS-------------------------------------------------
   const drakeStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -179,64 +209,20 @@ const Signup = () => {
     };
   });
 
-  const opacityAnimation = (index) =>
-    interpolate(
-      x.value,
-      [
-        (index - 1) * SCREEN_WIDTH,
-        index * SCREEN_WIDTH,
-        (index + 1) * SCREEN_WIDTH,
-      ],
-      [0, 1, 0],
-      Extrapolate.CLAMP
-    );
-
-  const translateYAnimation = (index) =>
-    interpolate(
-      x.value,
-      [
-        (index - 1) * SCREEN_WIDTH,
-        index * SCREEN_WIDTH,
-        (index + 1) * SCREEN_WIDTH,
-      ],
-      [150, 0, 150],
-      Extrapolate.CLAMP
-    );
-
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
-
-    // Transition to the next screen.
-    if (flatListRef.current) {
-      console.log(x.value);
-      flatListRef.current.scrollToIndex({ index: 1, animated: true });
-    }
-  };
-
-  const renderItem = ({ index }) => (
+  //RENDER ITEM FOR FLATLIST--------------------------------------------------------
+  const renderItem = ({ item, index }) => (
     <Animated.View
       key={index}
       style={{
         height: SCREEN_HEIGHT,
         width: SCREEN_WIDTH,
-        opacity: opacityAnimation(index),
-        transform: [{ translateY: translateYAnimation(index) }],
       }}
     >
-      {index === 0 ? (
-        <Choose handleOptionSelect={handleOptionSelect} />
-      ) : index === 1 && selectedOption === "native" ? (
-        <InformationInput />
-      ) : null}
+      {item}
     </Animated.View>
   );
-  const onScroll = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      x.value = event.contentOffset.x;
-      console.log(x.value);
-    },
-  });
 
+  //RETURN STATEMENT FOR SIGNUP COMPONENT----------------------------------------
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Image
@@ -359,9 +345,10 @@ const Signup = () => {
         ref={flatListRef as any}
         horizontal
         pagingEnabled
+        scrollEnabled={scrollEnabled}
         scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
-        data={Array(3).fill(null)} // For 3 pages/screens
+        data={getDynamicScreens()}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
         onScroll={onScroll}

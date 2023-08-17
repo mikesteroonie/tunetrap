@@ -26,6 +26,7 @@ import { data, type Data } from "./welcomedata";
 import { useEffect } from "react";
 
 import { Asset } from "expo-asset";
+import { useTheme } from "react-native-paper";
 
 const RenderItem = ({
   item,
@@ -42,18 +43,56 @@ const RenderItem = ({
     let width = SCREEN_WIDTH * 0.5;
     let height = SCREEN_WIDTH * 0.5;
 
+    let translateXValue = 0;
+    let translateYValue = 0;
+
+    switch (index) {
+      case 0:
+        translateXValue = 10;
+        translateYValue = 20;
+        break;
+      case 1:
+        translateXValue = -SCREEN_WIDTH * 0.1;
+        translateYValue = -SCREEN_HEIGHT * 0.14;
+        break;
+      case 2:
+        translateXValue = -SCREEN_WIDTH * 0.01;
+        translateYValue = -SCREEN_HEIGHT * 0.14;
+        break;
+      case 3:
+        translateXValue = -SCREEN_WIDTH * 0.2;
+        translateYValue = SCREEN_HEIGHT * 0.1;
+        break;
+      // Add more cases as necessary
+      default:
+        break;
+    }
+
+    // if (index === 0) {
+    //   width = SCREEN_WIDTH * 1.2;
+    //   height = SCREEN_WIDTH * 1.2;
+    // } else if (index === 1) {
+    //   width = SCREEN_WIDTH * 1.2;
+    //   height = SCREEN_WIDTH * 1.2;
+    // } else if (index === 2) {
+    //   width = SCREEN_WIDTH * 1.3;
+    //   height = SCREEN_WIDTH * 1.3;
+    // } else if (index === 3) {
+    //   width = SCREEN_WIDTH * 1.2;
+    //   height = SCREEN_WIDTH * 1.2;
+    // }
     if (index === 0) {
-      width = SCREEN_WIDTH * 1.2;
-      height = SCREEN_WIDTH * 1.2;
+      width = SCREEN_WIDTH * 1.7;
+      height = SCREEN_WIDTH * 1.7;
     } else if (index === 1) {
-      width = SCREEN_WIDTH * 1.2;
-      height = SCREEN_WIDTH * 1.2;
+      width = SCREEN_WIDTH * 2.3;
+      height = SCREEN_WIDTH * 2.3;
     } else if (index === 2) {
-      width = SCREEN_WIDTH * 1.3;
-      height = SCREEN_WIDTH * 1.3;
+      width = SCREEN_WIDTH * 1.85;
+      height = SCREEN_WIDTH * 1.85;
     } else if (index === 3) {
-      width = SCREEN_WIDTH * 1.2;
-      height = SCREEN_WIDTH * 1.2;
+      width = SCREEN_WIDTH * 1.75;
+      height = SCREEN_WIDTH * 1.75;
     }
 
     const opacityAnimation = interpolate(
@@ -82,12 +121,23 @@ const RenderItem = ({
       width: width, // Size can be adjusted as needed
       height: height, // Assuming square image, adjust as needed
       opacity: opacityAnimation,
-      transform: [{ translateY: translateYAnimation }],
+      transform: [
+        { translateY: translateYAnimation },
+        { translateX: translateXValue },
+        { translateY: translateYValue },
+      ],
     };
   });
 
   return (
-    <View style={[styles.itemContainer, { width: SCREEN_WIDTH }]}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        width: SCREEN_WIDTH,
+      }}
+    >
       <Image source={item.background} style={styles.backgroundImage} />
       <Animated.View
         style={[
@@ -106,6 +156,7 @@ const RenderItem = ({
 };
 
 export function Welcome({ onPastWelcome }) {
+  const theme = useTheme();
   useEffect(() => {
     const preloadImages = async () => {
       const images = [
@@ -144,7 +195,7 @@ export function Welcome({ onPastWelcome }) {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Animated.FlatList
         ref={flatListRef as any}
         data={data}
@@ -176,20 +227,12 @@ export function Welcome({ onPastWelcome }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  itemContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-  },
   image: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     resizeMode: "contain",
+    zIndex: 2,
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
@@ -197,6 +240,7 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "absolute",
     resizeMode: "cover",
+    zIndex: 1,
   },
   footerContainer: {
     flexDirection: "row",

@@ -47,7 +47,11 @@ const App = () => {
   };
 
   if (!isPastWelcome) {
-    return <LoginFirst onPastWelcome={handlePastWelcome} />;
+    return (
+      <PaperProvider>
+        <LoginFirst onPastWelcome={handlePastWelcome} />
+      </PaperProvider>
+    );
   } else if (!accountCreated) {
     return (
       <PaperProvider theme={theme}>

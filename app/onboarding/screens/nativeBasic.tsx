@@ -21,7 +21,6 @@ const InfoInput = ({ title, sub }) => {
   const [username, setUsername] = useState("");
 
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
-  const [isFocused, setIsFocused] = useState(false);
 
   // Conditionally return input label and state updater function
   const getInputProperties = () => {
@@ -73,18 +72,11 @@ const InfoInput = ({ title, sub }) => {
         selectionColor="transparent"
         underlineColor="transparent"
         onChangeText={(text) => setState(text)}
-        onFocus={() => {
-          setIsFocused(true);
-        }}
-        onBlur={() => {
-          setIsFocused(false);
-        }}
         style={{
           backgroundColor: "#292929",
           width: SCREEN_WIDTH * 0.7,
-          borderRadius: 10,
-          borderColor: isFocused ? "#4bcef8" : "transparent",
-          borderWidth: isFocused ? 1 : 0,
+          borderRadius: 5,
+
           marginTop: SCREEN_HEIGHT * 0.01,
         }}
       />
