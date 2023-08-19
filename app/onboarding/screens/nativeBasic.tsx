@@ -15,73 +15,54 @@ import { TextInput } from "react-native-paper";
 
 import { useState } from "react";
 
-import { supabase } from "@lib/supabase";
-
-const InfoInput = ({ title, sub }) => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-
-  const [loading, setLoading] = useState(false);
-
+const InfoInput = ({ title, sub, onTextChange }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
-
-  async function signUpWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
-
   // Conditionally return input label and state updater function
-  const getInputProperties = () => {
-    switch (title) {
-      case "Full Name":
-        return {
-          label: "Full Name",
-          value: fullName,
-          setState: setFullName,
-        };
-      case "Email":
-        return {
-          label: "email@address.com",
-          value: email,
-          setState: setEmail,
-        };
-      case "Password":
-        return {
-          label: "Password",
-          value: password,
-          setState: setPassword,
-        };
-      case "Username":
-        return {
-          label: "@handle",
-          value: username,
-          setState: setUsername,
-        };
-      default:
-        return {};
-    }
-  };
+  //NOT NEEDED ANY MORE DO TO LIFTING UP STATE FROM PARENT COMPONENT
+  // const getInputProperties = () => {
+  //   switch (title) {
+  //     case "Full Name":
+  //       return {
+  //         label: "Full Name",
+  //         value: fullName,
+  //         setState: setFullName,
+  //       };
+  //     case "Email":
+  //       return {
+  //         label: "email@address.com",
+  //         value: email,
+  //         setState: setEmail,
+  //       };
+  //     case "Password":
+  //       return {
+  //         label: "Password",
+  //         value: password,
+  //         setState: setPassword,
+  //       };
+  //     case "Username":
+  //       return {
+  //         label: "@handle",
+  //         value: username,
+  //         setState: setUsername,
+  //       };
+  //     default:
+  //       return {};
+  //   }
+  // };
 
-  const { label, value, setState } = getInputProperties();
+  // const { label, value, setState } = getInputProperties();
+  let label = "";
+
+  if (title === "Full Name") {
+    label = "Full Name";
+  } else if (title === "Email") {
+    label = "email@address.com";
+  } else if (title === "Password") {
+    label = "Password";
+  } else if (title === "Username") {
+    label = "@handle";
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>
@@ -93,13 +74,16 @@ const InfoInput = ({ title, sub }) => {
       </Text>
       <TextInput
         label={label}
-        value={value}
         textColor="white"
         mode="flat"
-        secureTextEntry={label == "Password" ? true : false}
+        secureTextEntry={title == "Password" ? true : false}
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => setState(text)}
+        autoCapitalize="none"
+        onChangeText={(text) => {
+          console.log(`Input for ${title}:`, text);
+          onTextChange(text);
+        }}
         style={{
           backgroundColor: "#292929",
           width: SCREEN_WIDTH * 0.7,
@@ -112,7 +96,12 @@ const InfoInput = ({ title, sub }) => {
   );
 };
 
-const InformationInput = () => {
+const InformationInput = ({
+  handleFullNameSet,
+  handleUsernameSet,
+  handleEmailSet,
+  handlePasswordSet,
+}) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
   const [isUsernameFocused, setUsernameFocus] = useState(false);
   return (
@@ -136,15 +125,25 @@ const InformationInput = () => {
             gap: 4,
           }}
         >
-          <InfoInput title="Full Name" sub="Let's get to know eachother :)" />
-          <InfoInput title="Email" sub="UMich Email preferred" />
+          <InfoInput
+            title="Full Name"
+            sub="Let's get to know eachother :)"
+            onTextChange={handleFullNameSet}
+          />
+          <InfoInput
+            title="Email"
+            sub="UMich Email preferred"
+            onTextChange={handleEmailSet}
+          />
           <InfoInput
             title="Password"
             sub="We'll keep this under wraps for ya..."
+            onTextChange={handlePasswordSet}
           />
           <InfoInput
             title="Username"
             sub="You might have your name as a unique handle👀"
+            onTextChange={handleUsernameSet}
           />
           <TouchableOpacity
             style={{

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   StyleSheet,
+  Alert,
 } from "react-native";
 
 import { useState, useRef } from "react";
@@ -32,6 +33,8 @@ import Animated, {
 import InformationInput from "./screens/nativeBasic";
 import Setup from "./screens/nativeProfileSetup";
 
+import { supabase } from "@lib/supabase";
+
 type ImageAsset = {
   id: number;
   image: any;
@@ -52,10 +55,21 @@ const Signup = () => {
 
   const [selectedOption, setSelectedOption] = useState("");
 
+  const [loading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [image, setImage] = useState(null);
+
   const flatListRef = useRef(null); // Reference to the FlatList
   const x = useSharedValue(0);
 
   const [scrollEnabled, setScrollEnabled] = useState(false);
+
+  //State Setter for Option Select
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
     setScrollEnabled(true);
@@ -64,6 +78,89 @@ const Signup = () => {
     if (flatListRef.current) {
       flatListRef.current.scrollToIndex({ index: 1, animated: true });
     }
+  };
+
+  async function signInWithEmail() {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) Alert.alert(error.message);
+    setLoading(false);
+  }
+  async function signUpWithEmail() {
+    setLoading(true);
+
+    // First, sign up the user.
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      {
+        email: email, // make sure you use the variables you've set up
+        password: password,
+      }
+    );
+
+    // If there's an error with signing up, handle it.
+    if (signUpError) {
+      Alert.alert(signUpError.message);
+      setLoading(false);
+      return; // Return here to prevent further execution
+    }
+
+    // Insert data into the "profiles" table.
+    const { data: insertData, error: insertError } = await supabase
+      .from("profiles")
+      .insert([
+        {
+          id: signUpData.user.id,
+          username: username,
+          firstname: firstName,
+          lastname: lastName,
+          imageUrl: image,
+        },
+      ]);
+
+    // If there's an error with the insert operation, handle it.
+    if (insertError) {
+      Alert.alert(insertError.message);
+      setLoading(false);
+      return; // Return here to prevent further execution
+    }
+
+    // The user is already authenticated after sign up, so no need to sign them in again.
+
+    setLoading(false);
+  }
+
+  //STATE SETTER 1: Email
+
+  const handleEmailSet = (email) => {
+    setEmail(email);
+    console.log(email);
+  };
+  //STATE SETTER 2: Email
+
+  const handlePasswordSet = (password) => {
+    setPassword(password);
+    console.log(password);
+  };
+  //STATE SETTER 3: Email
+
+  const handleFullNameSet = (fullName) => {
+    setFullName(fullName);
+    console.log(fullName);
+  };
+  //STATE SETTER 4: Email
+
+  const handleUsernameSet = (username) => {
+    setUsername(username);
+    console.log(username);
+  };
+  //STATE SETTER 5: Email
+
+  const handleProfileSet = (image) => {
+    setImage(image);
   };
 
   const onScroll = useAnimatedScrollHandler({
@@ -75,8 +172,12 @@ const Signup = () => {
   const getDynamicScreens = () => {
     return [
       <Choose handleOptionSelect={handleOptionSelect} />,
-
-      <InformationInput />,
+      <InformationInput
+        setEmail={handleEmailSet}
+        setPassword={handlePasswordSet}
+        setFullName={handleFullNameSet}
+        setUsername={handleUsernameSet}
+      />,
       <Setup />,
     ];
   };
