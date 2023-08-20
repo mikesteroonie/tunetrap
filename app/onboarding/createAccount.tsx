@@ -8,6 +8,8 @@ import {
   Alert,
 } from "react-native";
 
+import { Logs } from "expo";
+
 import { useState, useRef } from "react";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -34,6 +36,8 @@ import InformationInput from "./screens/nativeBasic";
 import Setup from "./screens/nativeProfileSetup";
 
 import { supabase } from "@lib/supabase";
+
+Logs.enableExpoCliLogging;
 
 type ImageAsset = {
   id: number;
@@ -64,6 +68,14 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [image, setImage] = useState(null);
 
+  const [artistOne, setArtistOne] = useState("");
+  const [artistTwo, setArtistTwo] = useState("");
+  const [artistThree, setArtistThree] = useState("");
+
+  //higher state functions to check if there is input for all text fields
+  const [hasPutFirst, setHasPutFirst] = useState(false);
+  const [hasPutSecond, setHasPutSecond] = useState(false);
+
   const flatListRef = useRef(null); // Reference to the FlatList
   const x = useSharedValue(0);
 
@@ -80,16 +92,6 @@ const Signup = () => {
     }
   };
 
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
   async function signUpWithEmail() {
     setLoading(true);
 
@@ -127,7 +129,6 @@ const Signup = () => {
       setLoading(false);
       return; // Return here to prevent further execution
     }
-
     // The user is already authenticated after sign up, so no need to sign them in again.
 
     setLoading(false);
@@ -137,30 +138,64 @@ const Signup = () => {
 
   const handleEmailSet = (email) => {
     setEmail(email);
-    console.log(email);
   };
   //STATE SETTER 2: Email
 
   const handlePasswordSet = (password) => {
     setPassword(password);
-    console.log(password);
   };
   //STATE SETTER 3: Email
 
   const handleFullNameSet = (fullName) => {
     setFullName(fullName);
-    console.log(fullName);
   };
   //STATE SETTER 4: Email
 
   const handleUsernameSet = (username) => {
     setUsername(username);
-    console.log(username);
   };
-  //STATE SETTER 5: Email
+  //STATE SETTER 5: Picture
 
-  const handleProfileSet = (image) => {
+  const handlePicSet = (image) => {
     setImage(image);
+  };
+
+  //STATE SETTER 6: Artist1
+
+  const handleArtistOne = (artistOne) => {
+    setArtistOne(artistOne);
+  };
+  //STATE SETTER 7: Picture
+
+  const handleArtistTwo = (artistTwo) => {
+    setArtistTwo(artistTwo);
+  };
+
+  //STATE SETTER 8: Picture
+
+  const handleArtistThree = (artistThree) => {
+    setArtistThree(artistThree);
+  };
+
+  //STATE SETTER 9: input for everything one
+  const handlePutFirst = (hasPutFirst) => {
+    setHasPutFirst(hasPutFirst);
+  };
+
+  //DEBUGGING
+  const handleNextLogging = () => {
+    console.warn({ email, password, fullName, username });
+    if (!fullName || !email || !password || !username) {
+      // This is a very basic check. You might want to do more specific checks for each input.
+      Alert.alert(
+        "Missing",
+        "Please make sure you fill all fields out partner:)"
+      );
+      return;
+    }
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index: 2, animated: true });
+    }
   };
 
   const onScroll = useAnimatedScrollHandler({
@@ -173,12 +208,21 @@ const Signup = () => {
     return [
       <Choose handleOptionSelect={handleOptionSelect} />,
       <InformationInput
-        setEmail={handleEmailSet}
-        setPassword={handlePasswordSet}
-        setFullName={handleFullNameSet}
-        setUsername={handleUsernameSet}
+        handleEmailSet={handleEmailSet}
+        handlePasswordSet={handlePasswordSet}
+        handleFullNameSet={handleFullNameSet}
+        handleUsernameSet={handleUsernameSet}
+        handleNextLogging={handleNextLogging}
+        handlePutFirst={handlePutFirst}
       />,
-      <Setup />,
+      <Setup
+        handlePicSet={handlePicSet}
+        handleArtistOne={handleArtistOne}
+        handleArtistTwo={handleArtistTwo}
+        handleArtistThree={handleArtistThree}
+        image={image}
+        signUpWithEmail={signUpWithEmail}
+      />,
     ];
   };
 

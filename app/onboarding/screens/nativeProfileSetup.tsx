@@ -19,15 +19,15 @@ import * as ImagePicker from "expo-image-picker";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const nativeProfileSetup = () => {
-  const [artistOne, setArtistOne] = useState("");
-  const [artistTwo, setArtistTwo] = useState("");
-  const [artistThree, setArtistThree] = useState("");
-
+const nativeProfileSetup = ({
+  handlePicSet,
+  handleArtistOne,
+  handleArtistTwo,
+  handleArtistThree,
+  image,
+  signUpWithEmail,
+}) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
-  const [isFocused, setIsFocused] = useState(false);
-
-  const [image, setImage] = useState(null);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -41,7 +41,7 @@ const nativeProfileSetup = () => {
     console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      handlePicSet(result.assets[0].uri);
     }
   };
 
@@ -114,12 +114,11 @@ const nativeProfileSetup = () => {
       </Text>
       <TextInput
         label="Artist 1"
-        value={artistOne}
         textColor="white"
         mode="flat"
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => setArtistOne(text)}
+        onChangeText={(text) => handleArtistOne(text)}
         style={{
           backgroundColor: "#292929",
           width: SCREEN_WIDTH * 0.7,
@@ -130,12 +129,11 @@ const nativeProfileSetup = () => {
       />
       <TextInput
         label="Artist 2"
-        value={artistTwo}
         textColor="white"
         mode="flat"
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => setArtistTwo(text)}
+        onChangeText={(text) => handleArtistTwo(text)}
         style={{
           backgroundColor: "#292929",
           width: SCREEN_WIDTH * 0.7,
@@ -145,12 +143,11 @@ const nativeProfileSetup = () => {
       />
       <TextInput
         label="Artist 3"
-        value={artistThree}
         textColor="white"
         mode="flat"
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => setArtistThree(text)}
+        onChangeText={(text) => handleArtistThree(text)}
         style={{
           backgroundColor: "#292929",
           width: SCREEN_WIDTH * 0.7,
@@ -158,6 +155,23 @@ const nativeProfileSetup = () => {
           marginTop: SCREEN_HEIGHT * 0.01,
         }}
       />
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#4bcef8",
+          padding: 10,
+          borderRadius: 30,
+          justifyContent: "center",
+          alignItems: "center",
+          margin: 80,
+          width: SCREEN_WIDTH * 0.4,
+        }}
+        onPress={signUpWithEmail}
+      >
+        <Text style={{ color: "white", fontSize: 16 }} className="font-med">
+          SUBMIT
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

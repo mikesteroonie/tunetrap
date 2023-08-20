@@ -1,9 +1,20 @@
 {
   "expo": {
+    "plugins": [
+      "expo-dev-client",
+      "expo-router"
+    ],
     "scheme": "myapp",
-
     "web": {
       "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "af7c52cf-3086-407f-86a8-24d2322c9fdb"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.mikey1113.tunetrap"
     }
   }
 }

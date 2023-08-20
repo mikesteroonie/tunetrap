@@ -15,43 +15,20 @@ import { TextInput } from "react-native-paper";
 
 import { useState } from "react";
 
-const InfoInput = ({ title, sub, onTextChange }) => {
+const InfoInput = ({ title, sub, onTextChange, hasTried }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+  console.log(`Received onTextChange for ${title}:`, onTextChange);
+  const [inputValue, setInputValue] = useState("");
 
-  // Conditionally return input label and state updater function
-  //NOT NEEDED ANY MORE DO TO LIFTING UP STATE FROM PARENT COMPONENT
-  // const getInputProperties = () => {
-  //   switch (title) {
-  //     case "Full Name":
-  //       return {
-  //         label: "Full Name",
-  //         value: fullName,
-  //         setState: setFullName,
-  //       };
-  //     case "Email":
-  //       return {
-  //         label: "email@address.com",
-  //         value: email,
-  //         setState: setEmail,
-  //       };
-  //     case "Password":
-  //       return {
-  //         label: "Password",
-  //         value: password,
-  //         setState: setPassword,
-  //       };
-  //     case "Username":
-  //       return {
-  //         label: "@handle",
-  //         value: username,
-  //         setState: setUsername,
-  //       };
-  //     default:
-  //       return {};
-  //   }
-  // };
+  const [isFocused, setIsFocused] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [touched, setTouched] = useState(false);
 
-  // const { label, value, setState } = getInputProperties();
+  const validateEmail = (email) => {
+    const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    return regex.test(email);
+  };
+
   let label = "";
 
   if (title === "Full Name") {
@@ -76,22 +53,49 @@ const InfoInput = ({ title, sub, onTextChange }) => {
         label={label}
         textColor="white"
         mode="flat"
+        onFocus={() => {
+          setIsFocused(true);
+        }}
+        onBlur={() => {
+          setIsFocused(false);
+          if (title === "Email" && inputValue) {
+            setIsValidEmail(validateEmail(inputValue));
+          }
+          setTouched(true);
+        }}
+        error={hasTried && !inputValue}
         secureTextEntry={title == "Password" ? true : false}
         selectionColor="transparent"
         underlineColor="transparent"
         autoCapitalize="none"
         onChangeText={(text) => {
-          console.log(`Input for ${title}:`, text);
+          setInputValue(text);
           onTextChange(text);
+          // console.warn(`Input for ${title}:`, text);
         }}
-        style={{
-          backgroundColor: "#292929",
-          width: SCREEN_WIDTH * 0.7,
-          borderRadius: 5,
+        style={[
+          {
+            backgroundColor: "#292929",
+            width: SCREEN_WIDTH * 0.7,
+            borderRadius: 5,
 
-          marginTop: SCREEN_HEIGHT * 0.01,
-        }}
+            marginTop: SCREEN_HEIGHT * 0.01,
+          },
+          !isFocused && !inputValue && touched
+            ? { borderColor: "red", borderWidth: 1 }
+            : {},
+          title === "Email" && !isValidEmail
+            ? { borderColor: "red", borderWidth: 1 }
+            : {},
+        ]}
       />
+      {hasTried && !inputValue && (
+        <Text style={{ color: "red", flex: 1 }}>This field is required.</Text>
+      )}
+
+      {title === "Email" && !isValidEmail && (
+        <Text style={{ color: "red", flex: 1 }}>Not a valid email format</Text>
+      )}
     </SafeAreaView>
   );
 };
@@ -101,9 +105,12 @@ const InformationInput = ({
   handleUsernameSet,
   handleEmailSet,
   handlePasswordSet,
+  handleNextLogging,
+  handlePutFirst,
 }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
   const [isUsernameFocused, setUsernameFocus] = useState(false);
+  const [hasTried, setHasTried] = useState(false);
   return (
     <SafeAreaView
       style={{
@@ -129,21 +136,25 @@ const InformationInput = ({
             title="Full Name"
             sub="Let's get to know eachother :)"
             onTextChange={handleFullNameSet}
+            hasTried={hasTried}
           />
           <InfoInput
             title="Email"
             sub="UMich Email preferred"
             onTextChange={handleEmailSet}
+            hasTried={hasTried}
           />
           <InfoInput
             title="Password"
             sub="We'll keep this under wraps for ya..."
             onTextChange={handlePasswordSet}
+            hasTried={hasTried}
           />
           <InfoInput
             title="Username"
             sub="You might have your name as a unique handle👀"
             onTextChange={handleUsernameSet}
+            hasTried={hasTried}
           />
           <TouchableOpacity
             style={{
@@ -156,7 +167,8 @@ const InformationInput = ({
               width: SCREEN_WIDTH * 0.4,
             }}
             onPress={() => {
-              console.log("pressed");
+              handleNextLogging();
+              setHasTried(true);
             }}
           >
             <Text style={{ color: "white", fontSize: 16 }} className="font-med">

@@ -5,6 +5,14 @@
   "build": {
     "development": {
       "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "production": {},
+
+    "preview": {
       "distribution": "internal"
     },
     "development-simulator": {
@@ -14,13 +22,12 @@
         "simulator": true
       }
     },
-    "preview": {
-      "distribution": "internal",
+    "local-simulator": {
+      "releaseChannel": "local-simulator",
       "ios": {
         "simulator": true
       }
-    },
-    "production": {}
+    }
   },
   "submit": {
     "production": {}
