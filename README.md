@@ -2,6 +2,8 @@
 
 This social media app I'm creating built on the angle to allow people to create a profile around their music tastes built with React Native. The stack is: Typescript, Expo Router, Tailwind(Nativewind), Zustand, and Supabase(PostgreSQL) for the backend.
 
+- [Figma File](https://www.figma.com/file/dA3oJG9pWqyYrkjG9ruMCL/Vibe-o-graphy?type=design&node-id=0%3A1&mode=design&t=WpZ1eQFlx2jaIQsZ-1): Designed by me:) Self Taught color-design, user-oriented usablility, typography usage, hierarchial structure, amongst other UI/UX design principles.
+
 ## 🛠️ Tools Used
 
 - [Expo Router](https://github.com/expo/router): The File-based router for universal React Native apps.
@@ -26,4 +28,3 @@ All designs were created in Figma by me, and all artists artwork are being utili
 ![share](https://github.com/mikesteroonie/tunetrap/assets/86593468/49ba97bd-372f-4072-81c2-37ca0c4807d0)
 ![document](https://github.com/mikesteroonie/tunetrap/assets/86593468/de99f6be-29b0-4722-ba7e-dae6518d63e2)
 ![discover](https://github.com/mikesteroonie/tunetrap/assets/86593468/2a74f193-0ef1-41a5-bf6f-f9a3b6dc6036)
-
