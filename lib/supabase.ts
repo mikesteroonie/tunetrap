@@ -17,11 +17,16 @@ const ExpoSecureStoreAdapter = {
 const supabaseUrl = process.env.EXPO_PUBLIC_supabaseUrl;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_supabaseAnonKey;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: ExpoSecureStoreAdapter as any,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
-});
+export const supabase = createClient(
+  "SUPABASEURL",
+  "ANON_KEY",
+
+  {
+    auth: {
+      storage: ExpoSecureStoreAdapter as any,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  }
+);

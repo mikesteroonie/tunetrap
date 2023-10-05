@@ -16,9 +16,7 @@ import { Image } from "expo-image";
 
 import * as ImagePicker from "expo-image-picker";
 
-const blurhash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
-
+import { supabase } from "@lib/supabase";
 const nativeProfileSetup = ({
   handlePicSet,
   handleArtistOne,
@@ -28,6 +26,19 @@ const nativeProfileSetup = ({
   signUpWithEmail,
 }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+  const [isValidEmail, setIsValidEmail] = useState(true);
+
+  const [isFocusedOne, setIsFocusedOne] = useState(false);
+  const [touchedOne, setTouchedOne] = useState(false);
+  const [inputValueOne, setInputValueOne] = useState("");
+
+  const [isFocusedTwo, setIsFocusedTwo] = useState(false);
+  const [touchedTwo, setTouchedTwo] = useState(false);
+  const [inputValueTwo, setInputValueTwo] = useState("");
+
+  const [isFocusedThree, setIsFocusedThree] = useState(false);
+  const [touchedThree, setTouchedThree] = useState(false);
+  const [inputValueThree, setInputValueThree] = useState("");
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -43,6 +54,27 @@ const nativeProfileSetup = ({
     if (!result.canceled) {
       handlePicSet(result.assets[0].uri);
     }
+  };
+  const uploadImageToSupabase = async (imageUri, imageName) => {
+    // Read the image into memory
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+
+    // Upload the image to Supabase
+    const { data, error } = await supabase.storage
+      .from("profile_pics") // Replace with your Supabase bucket name
+      .upload(`${imageName}.jpg`, blob, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    // Handle the upload response
+    if (error) {
+      console.error("Error uploading image:", error);
+      return;
+    }
+
+    console.error("Successfully uploaded image:", data);
   };
 
   return (
@@ -118,52 +150,100 @@ const nativeProfileSetup = ({
         mode="flat"
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => handleArtistOne(text)}
-        style={{
-          backgroundColor: "#292929",
-          width: SCREEN_WIDTH * 0.7,
-          borderRadius: 5,
-
-          marginTop: SCREEN_HEIGHT * 0.01,
+        onFocus={() => {
+          setIsFocusedOne(true);
         }}
+        onBlur={() => {
+          setIsFocusedOne(false);
+          setTouchedOne(true);
+        }}
+        onChangeText={(text) => {
+          handleArtistOne(text);
+          setInputValueOne(text);
+        }}
+        style={[
+          {
+            backgroundColor: "#292929",
+            width: SCREEN_WIDTH * 0.7,
+            borderRadius: 5,
+
+            marginTop: SCREEN_HEIGHT * 0.01,
+          },
+          !isFocusedOne && !inputValueOne && touchedOne
+            ? { borderColor: "red", borderWidth: 1 }
+            : {},
+        ]}
       />
+
       <TextInput
         label="Artist 2"
         textColor="white"
         mode="flat"
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => handleArtistTwo(text)}
-        style={{
-          backgroundColor: "#292929",
-          width: SCREEN_WIDTH * 0.7,
-          borderRadius: 5,
-          marginTop: SCREEN_HEIGHT * 0.01,
+        onFocus={() => {
+          setIsFocusedTwo(true);
         }}
+        onBlur={() => {
+          setIsFocusedTwo(false);
+          setTouchedTwo(true);
+        }}
+        onChangeText={(text) => {
+          handleArtistTwo(text);
+          setInputValueTwo(text);
+        }}
+        style={[
+          {
+            backgroundColor: "#292929",
+            width: SCREEN_WIDTH * 0.7,
+            borderRadius: 5,
+            marginTop: SCREEN_HEIGHT * 0.01,
+          },
+          !isFocusedTwo && !inputValueTwo && touchedTwo
+            ? { borderColor: "red", borderWidth: 1 }
+            : {},
+        ]}
       />
+
       <TextInput
         label="Artist 3"
         textColor="white"
         mode="flat"
         selectionColor="transparent"
         underlineColor="transparent"
-        onChangeText={(text) => handleArtistThree(text)}
-        style={{
-          backgroundColor: "#292929",
-          width: SCREEN_WIDTH * 0.7,
-          borderRadius: 5,
-          marginTop: SCREEN_HEIGHT * 0.01,
+        onFocus={() => {
+          setIsFocusedThree(true);
         }}
+        onBlur={() => {
+          setIsFocusedThree(false);
+          setTouchedThree(true);
+        }}
+        onChangeText={(text) => {
+          handleArtistThree(text);
+          setInputValueThree(text);
+        }}
+        style={[
+          {
+            backgroundColor: "#292929",
+            width: SCREEN_WIDTH * 0.7,
+            borderRadius: 5,
+            marginTop: SCREEN_HEIGHT * 0.01,
+          },
+          !isFocusedThree && !inputValueThree && touchedThree
+            ? { borderColor: "red", borderWidth: 1 }
+            : {},
+        ]}
       />
 
       <TouchableOpacity
         style={{
           backgroundColor: "#4bcef8",
           padding: 10,
+          marginTop: 10,
           borderRadius: 30,
           justifyContent: "center",
           alignItems: "center",
-          margin: 80,
+          marginLeft: SCREEN_WIDTH * 0.2,
           width: SCREEN_WIDTH * 0.4,
         }}
         onPress={signUpWithEmail}

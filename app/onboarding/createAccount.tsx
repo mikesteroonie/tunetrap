@@ -10,7 +10,7 @@ import {
 
 import { Logs } from "expo";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -102,26 +102,49 @@ const Signup = () => {
         password: password,
       }
     );
-
+    console.warn("Signup Response:", signUpData, signUpError); // Output the actual response and error
     // If there's an error with signing up, handle it.
     if (signUpError) {
       Alert.alert(signUpError.message);
+      console.error(signUpError.message);
       setLoading(false);
       return; // Return here to prevent further execution
     }
+    //DEBUGGING-------------
+    console.warn("User signed up with ID:", signUpData.user.id);
 
-    // Insert data into the "profiles" table.
+    const profileData = {
+      id: signUpData.user.id,
+      username: username,
+      first_name: firstName,
+      last_name: lastName,
+      avatar_url: image,
+    };
+
+    console.warn(
+      "Attempting to insert data into 'profiles' table:",
+      profileData
+    );
+    // const currentUser = supabase.auth.session()?.user;
+    // console.log("Current authenticated user:", currentUser);
+
     const { data: insertData, error: insertError } = await supabase
       .from("profiles")
-      .insert([
-        {
-          id: signUpData.user.id,
-          username: username,
-          firstname: firstName,
-          lastname: lastName,
-          imageUrl: image,
-        },
-      ]);
+      .insert([profileData]);
+    //DEBUGGING-------------
+
+    // Insert data into the "profiles" table.
+    // const { data: insertData, error: insertError } = await supabase
+    //   .from("profiles")
+    //   .insert([
+    //     {
+    //       id: signUpData.user.id,
+    //       username: username,
+    //       first_name: firstName,
+    //       last_name: lastName,
+    //       avatar_url: image,
+    //     },
+    //   ]);
 
     // If there's an error with the insert operation, handle it.
     if (insertError) {
@@ -130,7 +153,7 @@ const Signup = () => {
       return; // Return here to prevent further execution
     }
     // The user is already authenticated after sign up, so no need to sign them in again.
-
+    console.warn("Data inserted successfully:", insertData);
     setLoading(false);
   }
 
@@ -182,9 +205,23 @@ const Signup = () => {
     setHasPutFirst(hasPutFirst);
   };
 
+  //useEffect hook to extract first and last names
+
+  useEffect(() => {
+    const nameArray = fullName.split(" ");
+
+    if (nameArray.length >= 2) {
+      setFirstName(nameArray[0]);
+      setLastName(nameArray.slice(1).join(" "));
+    } else {
+      setFirstName(nameArray[0] || "");
+      setLastName("");
+    }
+  }, [fullName]);
+
   //DEBUGGING
   const handleNextLogging = () => {
-    console.warn({ email, password, fullName, username });
+    console.warn({ email, password, fullName, username, firstName, lastName });
     if (!fullName || !email || !password || !username) {
       // This is a very basic check. You might want to do more specific checks for each input.
       Alert.alert(
